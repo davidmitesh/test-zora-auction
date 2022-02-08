@@ -1,6 +1,6 @@
 import { FetchStaticData, MediaFetchAgent } from "@zoralabs/nft-hooks";
 import { NETWORK_ID, CONTRACT_ADDRESSES } from './../../utils/env-vars'
-
+import {writeFileSync} from 'fs';
 module.exports = async (req: any, res: any) => {
   const { owner } = req.query;
   if (!owner) {
@@ -23,5 +23,7 @@ module.exports = async (req: any, res: any) => {
     },
     true
   );
+  // console.log(JSON.stringify(tokens))
+    writeFileSync('result.json',JSON.stringify(tokens))
   res.status(200).json({ tokens });
 };

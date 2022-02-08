@@ -1,6 +1,6 @@
 // import { constructMediaData, sha256FromBuffer, generateMetadata, isMediaDataVerified, Zora } from '@zoralabs/zdk'
 require('dotenv').config()
-const {constructMediaData,sha256FromBuffer,isMediaDataVerified,Zora,generateMetadata,constructBidShares} = require('@zoralabs/zdk')
+const {constructMediaData,sha256FromBuffer,isMediaDataVerified,Zora,generateMetadata,constructBidShares,sha256FromHexString} = require('@zoralabs/zdk')
 const {Generator} = require('@zoralabs/media-metadata-schemas')
 const {Wallet,providers}= require('ethers')
 // data should be passed as buffer 
@@ -98,7 +98,8 @@ async function uploadFileToDecentralizedStorage(url) {
   // function that uploads buffer to decentralized storage
   // and returns url of uploaded file from a gateway.
   return new Promise((resolve,reject)=>{
-      const readableStreamForFile = fs.createReadStream("./scripts/trial.mp4");
+      const readableStreamForFile = fs.createReadStream(url);
+
     pinata.pinFileToIPFS(readableStreamForFile).then((result) => {
       //handle results here
       console.log(result);
@@ -154,30 +155,34 @@ async function mintZNFT({
   let metadata = {
     
     
-    
+    image:"https://gateway.pinata.cloud/ipfs/Qmc4M1MeV3jmYZ1TU19XsqKSy92qfBJaNeZY62cm1DaWqK",animation_url:"https://gateway.pinata.cloud/ipfs/Qmf2S26SASCE8m3NfKCNL2svv2TVBEHE2BvqezvwijRG7y",
     
     version: 'zora-20210101',
     name:"mitesh",
     description:"sda",
-    mimeType:"text/plain"
+    mimeType:"video/mp4"
   }
   
 // metadata = generateMetadata('zora-20210101',metadata)
-const generator = new Generator(metadata.version)
-console.log(typeof(generator.generateJSON(metadata)))
-console.log(typeof(metadata))
+// const generator = new Generator(metadata.version)
+// console.log(generator.generateJSON(metadata))
+// console.log(typeof(generator.generateJSON(metadata)))
+// console.log(typeof(metadata))
 //   const generator = new Generator(metadata.version)
 // const minified = generator.generateJSON(metadata)
-  console.log("before hey")
+//   console.log("before hey")
   let contentURI = await uploadFileToDecentralizedStorage('./scripts/trial.mp4');
   // console.log(contentURI)
   // console.log("hey")
   // console.log(Buffer.from(metadata))
-  let metadataURI = await uploadJsonToDecentralizedStorage(Buffer.from(generator.generateJSON(metadata)));
+  let metadataURI = await uploadJsonToDecentralizedStorage(metadata);
 
-
-  const contentHash = sha256FromBuffer(Buffer.from('./scripts/trial.mp4'));
-  const metadataHash = sha256FromBuffer(generator.generateJSON(metadata));
+  let buf =  fs.readFileSync('./scripts/trial.mp4')
+  const contentHash = sha256FromBuffer(buf);
+//   const buf = Buffer.from('someContent')
+fs.writeFileSync('trial.json',JSON.stringify(metadata))
+let metadataBuf = fs.readFileSync('trial.json')
+let metadataHash = sha256FromBuffer(metadataBuf)
 //   console.log({
 //     contentURI,
 //     metadataURI,
@@ -194,11 +199,11 @@ console.log(typeof(metadata))
 
   
 
-  // Verifies hashes of content to ensure the hashes match
-//   const verified = await isMediaDataVerified(mediaData);
-//   if (!verified){
-//     throw new Error("MediaData not valid, do not mint");
-//   }
+//   Verifies hashes of content to ensure the hashes match
+  const verified = await isMediaDataVerified(mediaData);
+  if (!verified){
+    throw new Error("MediaData not valid, do not mint");
+  }
 
 //   BidShares should sum up to 100%
  

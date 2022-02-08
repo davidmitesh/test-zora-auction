@@ -35,7 +35,8 @@ export default function Piece({
   return (
     <>
       <Head
-        title={`${name} | ${APP_TITLE}`}
+        // title={`${name} | ${APP_TITLE}`}
+        title = "mith"
         description={description}
         ogImage={image}
       />
@@ -76,13 +77,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   });
 
   const tokenInfo = FetchStaticData.getIndexerServerTokenInfo(data);
+  console.log(tokenInfo)
+  console.log(data)
 
   return {
     props: {
       id,
       name: tokenInfo.metadata?.name || null,
       description: tokenInfo.metadata?.description || null,
-      image: tokenInfo.image || null,
+      // image: tokenInfo.image || null,
+      image : "https://gateway.pinata.cloud/ipfs/QmfLrBMqDcQRkAfVCGieR6jp5xdR6pzmLPxFguJNE1dTXM?preview=1",
       initialData: data,
     },
   };
