@@ -1,4 +1,4 @@
-import { NFTFullPage, MediaConfiguration } from "@zoralabs/nft-components";
+import { NFTFullPage, MediaConfiguration,FullComponents } from "@zoralabs/nft-components";
 import { useRouter } from "next/router";
 import {
   MediaFetchAgent,
@@ -50,7 +50,16 @@ export default function Piece({
             contract={query.contract as string}
             id={query.id as string}
             initialData={initialData}
-          />
+          >
+            <FullComponents.MediaFull />
+            <FullComponents.CollectionTag/>
+            <FullComponents.MediaInfo/>
+            <FullComponents.ProofAuthenticity/>
+            <FullComponents.AuctionInfo/>
+            <FullComponents.PlaceOfferButton/>
+            <FullComponents.BidHistory/>
+            
+            </NFTFullPage>
         </PageWrapper>
       </MediaConfiguration>
     </>
@@ -79,14 +88,17 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const tokenInfo = FetchStaticData.getIndexerServerTokenInfo(data);
   console.log(tokenInfo)
   console.log(data)
-
+  console.log(data.nft.tokenData.tokenContract)
+  // const result = await fetchAgent.fetch
+  // console.log(await fetchAgent.loadNFTData(tokenInfo.tokenContract,tokenInfo.tokenId))
+  // https://gateway.pinata.cloud/ipfs/QmaT7qvfDF8TsncoQkiv4ZUj3KcXas9CGcQ9AZKjfaJ2zj
   return {
     props: {
       id,
       name: tokenInfo.metadata?.name || null,
-      description: tokenInfo.metadata?.description || null,
+      description: data.nft.tokenData.metadata || null,
       // image: tokenInfo.image || null,
-      image : "https://gateway.pinata.cloud/ipfs/QmfLrBMqDcQRkAfVCGieR6jp5xdR6pzmLPxFguJNE1dTXM?preview=1",
+      image : data.nft.tokenData.tokenURI,
       initialData: data,
     },
   };

@@ -10,7 +10,7 @@ const provider = new providers.InfuraProvider("rinkeby",{
 })
 let wallet = new Wallet('0b427d9590120f1dc8b41b821a229327ca33a0523a3cc04154c5607de20138a1');
 wallet = wallet.connect(provider)
-const zora = new Zora(wallet, 4)
+const zora = new Zora(wallet, 4,'0x40d8133C5601d2e2811e62646C2cC4e17A67B1e8','0x79036DB3E9bCe3E17a412887bE4870cA10446f2A')
 
 // console.log(zora)
 // const axios = require('axios')
@@ -140,28 +140,19 @@ async function uploadJsonToDecentralizedStorage(data) {
 
 
 
-async function mintZNFT({
-  // zora: typeof Zora,
+async function mintZNFT(
+  
   content,
   mimeType,
   name,
   description,
   previewImageUrl,
   animationUrl
-}) {
+) {
 
  
 
-  let metadata = {
-    
-    
-    image:"https://gateway.pinata.cloud/ipfs/Qmc4M1MeV3jmYZ1TU19XsqKSy92qfBJaNeZY62cm1DaWqK",animation_url:"https://gateway.pinata.cloud/ipfs/Qmf2S26SASCE8m3NfKCNL2svv2TVBEHE2BvqezvwijRG7y",
-    
-    version: 'zora-20210101',
-    name:"mitesh",
-    description:"sda",
-    mimeType:"video/mp4"
-  }
+  
   
 // metadata = generateMetadata('zora-20210101',metadata)
 // const generator = new Generator(metadata.version)
@@ -171,17 +162,29 @@ async function mintZNFT({
 //   const generator = new Generator(metadata.version)
 // const minified = generator.generateJSON(metadata)
 //   console.log("before hey")
-  let contentURI = await uploadFileToDecentralizedStorage('./scripts/trial.mp4');
+  let contentURI = await uploadFileToDecentralizedStorage('./scripts/CIF.jpeg');
+  let metadata = {
+    
+    version: 'zora-20210101',
+    name:"Celo India Fellowship",
+    description:`Celo India Fellowship is the 2 month fellowship program organized by Celo India
+    with the aim of making developers comfortable with the smart contract deployment process.`,
+    image:contentURI,
+    // animation_url:"https://gateway.pinata.cloud/ipfs/Qmf2S26SASCE8m3NfKCNL2svv2TVBEHE2BvqezvwijRG7y",
+    
+    image_url:contentURI,
+  }
+  // const minified = generateMetadata(metadata.version,metadata)
   // console.log(contentURI)
   // console.log("hey")
   // console.log(Buffer.from(metadata))
   let metadataURI = await uploadJsonToDecentralizedStorage(metadata);
 
-  let buf =  fs.readFileSync('./scripts/trial.mp4')
+  let buf =  fs.readFileSync('./scripts/CIF.jpeg')
   const contentHash = sha256FromBuffer(buf);
 //   const buf = Buffer.from('someContent')
-fs.writeFileSync('trial.json',JSON.stringify(metadata))
-let metadataBuf = fs.readFileSync('trial.json')
+fs.writeFileSync('CIF.json',JSON.stringify(metadata))
+let metadataBuf = fs.readFileSync('CIF.json')
 let metadataHash = sha256FromBuffer(metadataBuf)
 //   console.log({
 //     contentURI,
@@ -239,7 +242,8 @@ let metadataHash = sha256FromBuffer(metadataBuf)
 
 
 
-mintZNFT(Buffer.from('./scripts/trial.mp4'),
+mintZNFT(zora,
+  Buffer.from('./scripts/back.jpg'),
 'video/mp4',
 "Special Edition Jwellery",
 "A very cost jewellery item",
